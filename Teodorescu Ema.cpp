@@ -1,5 +1,4 @@
-
- #include <iostream>
+#include <iostream>
 #include <string>
 using namespace std;
 
@@ -236,9 +235,9 @@ public:
         return serieAntena;
     }
 
-  
 
-   
+
+
     const char* getNumeAntena() {
         return numeAntena;
     }
@@ -433,7 +432,7 @@ public:
         return this->codCAEN;
     }
 
-   
+
 
 
     const char* getDenumireFirma() {
@@ -529,6 +528,177 @@ public:
 };
 
 int Firma::nrFirme = 50;
+class Satelit {
+    string denumire;
+    float greutate;
+    float pretFabricare;
+    int nrAntene;
+    Antena* antene;
+    bool areCamera;
+
+public:
+    Satelit() {
+        this->denumire = "Neptun";
+        this->greutate = 36.5;
+        this->pretFabricare = 3.21;
+        this->nrAntene = 0;
+        this->antene = NULL;
+        this->areCamera = false;
+    }
+
+    // Constructor cu parametri
+    Satelit(string denumire, float greutate, float pretFabricare, int nrAntene, Antena* antene, bool areCamera) {
+        this->denumire = denumire;
+        this->greutate = greutate;
+        this->pretFabricare = pretFabricare;
+        this->nrAntene = nrAntene;
+        if (nrAntene > 0) {
+            this->antene = new Antena[nrAntene];
+            for (int i = 0; i < nrAntene; ++i) {
+                this->antene[i] = antene[i];
+            }
+        }
+        else {
+            this->antene = NULL;
+        }
+        this->areCamera = areCamera;
+
+    }
+
+    // Constructor de copiere
+    Satelit(const Satelit& s) {
+        this->denumire = s.denumire;
+        this->greutate = s.greutate;
+        this->pretFabricare = s.pretFabricare;
+        this->nrAntene = s.nrAntene;
+        if (s.nrAntene > 0) {
+            this->antene = new Antena[nrAntene];
+            for (int i = 0; i < s.nrAntene; ++i) {
+                this->antene[i] = s.antene[i];
+            }
+        }
+        else {
+            this->antene = NULL;
+        }
+        this->areCamera = s.areCamera;
+    }
+
+    // Operatorul de atribuire
+    Satelit& operator=(const Satelit& s) {
+        if (this != &s) {
+            delete[] antene;
+            this->denumire = s.denumire;
+            this->greutate = s.greutate;
+            this->pretFabricare = s.pretFabricare;
+            this->nrAntene = s.nrAntene;
+            if (s.nrAntene > 0) {
+                this->antene = new Antena[nrAntene];
+                for (int i = 0; i < s.nrAntene; ++i) {
+                    this->antene[i] = s.antene[i];
+                }
+            }
+            else {
+                this->antene = NULL;
+            }
+            this->areCamera = s.areCamera;
+        }
+        return *this;
+    }
+
+    ~Satelit() {
+        delete[] this->antene;
+    }
+
+    string getDenumire() {
+        return denumire;
+    }
+
+    void setDenumire(string denumire) {
+        this->denumire = denumire;
+    }
+
+    float getGreutate() {
+        return greutate;
+    }
+
+    void setGreutate(float greutate) {
+        this->greutate = greutate;
+    }
+
+    float getPretFabricare() {
+        return pretFabricare;
+    }
+
+    void setPretFabricare(float pretFabricare) {
+        this->pretFabricare = pretFabricare;
+    }
+
+    int getNrAntene() {
+        return nrAntene;
+    }
+
+    Antena* getAntene() {
+        return this->antene;
+    }
+
+    void setAntene(int nrAntene, Antena* antene) {
+        if (nrAntene > 0 && antene != NULL) {
+            this->nrAntene = nrAntene;
+            delete[] this->antene;
+            this->antene = new Antena[this->nrAntene];
+            for (int i = 0; i < this->nrAntene; ++i) {
+                this->antene[i] = antene[i];
+            }
+        }
+
+    }
+
+    bool getAreCamera() {
+        return areCamera;
+    }
+
+    void setAreCamera(bool areCamera) {
+        this->areCamera = areCamera;
+    }
+
+    friend ostream& operator<<(ostream& out, const Satelit& s) {
+        out << "Denumire satelit: " << s.denumire << endl;
+        out << "Greutate: " << s.greutate << endl;
+        out << "Pret fabricare: " << s.pretFabricare << endl;
+        out << "Numar antene: " << s.nrAntene << endl;
+        out << "Antene:" << endl;
+        for (int i = 0; i < s.nrAntene; i++) {
+            out << s.antene[i] << endl;
+        }
+        out << endl;
+        out << "Are camera: " << s.areCamera << endl;
+        return out;
+    }
+
+    //cantitate din tone in kg
+    float operator()() {
+        return this->greutate * 1000;
+    }
+
+    explicit operator float() {
+        return this->pretFabricare;
+    }
+
+    Satelit operator +(float valoare) {
+        Satelit copie = *this;
+        copie.greutate += valoare;
+        copie.pretFabricare += valoare;
+        return copie;
+    }
+
+    friend Satelit operator-(float val, Satelit s) {
+        Satelit copie = s;
+        if (s.pretFabricare > val) {
+            copie.pretFabricare -= val;
+        }
+        return copie;
+    }
+};
 
 
 void main() {
@@ -546,7 +716,7 @@ void main() {
     cout << endl;
 
     cout << "Nr. Maxim Ore pentru Angajati: " << Angajat::getNrMaximOre() << endl;
-    
+
 
 
 
@@ -568,7 +738,7 @@ void main() {
     cout << endl;
 
     cout << "Nr. Antene: " << Antena::getNrAntena() << endl;
-    
+
 
 
     cout << endl << endl << "----------------------------------------------" << endl;
@@ -588,7 +758,7 @@ void main() {
 
 
     cout << "Nr. Firme: " << Firma::getNrFirme() << endl;
-    
+
     cout << endl << endl << "----------------------------------------------" << endl;
     cout << endl << endl << "----------------------------------------------" << endl;
     cout << endl << endl << "----------------------------------------------" << endl;
@@ -639,7 +809,7 @@ void main() {
     antena3.setNumeAntena("Antena Wi-fi Helicopter");
     antena3.setMaterial("Carbon");
     antena3.setFrecventaRadioPerSenzor(4, new float[4] {22, 155, 45, 11});
-  
+
     cout << endl << endl;
 
     cout << antena3.getSerieAntena() << endl;
@@ -660,12 +830,12 @@ void main() {
     cout << firma3.getDenumireFirma() << endl;
     cout << firma3.getProfit() << endl;
     cout << firma3.getAnInfintare() << endl;
-   
+
 
     firma3.setDenumireFirma("T&E Association");
     firma3.setProfit(15000.0);
     firma3.setAnInfintare(1995);
-   
+
 
 
     cout << endl << endl;
@@ -673,7 +843,7 @@ void main() {
     cout << firma3.getDenumireFirma() << endl;
     cout << firma3.getProfit() << endl;
     cout << firma3.getAnInfintare() << endl;
-   
+
 
     cout << "OPERATORI" << endl << endl << endl;
     cout << angajat << endl;
@@ -746,7 +916,7 @@ void main() {
     Firma* vectFirma = new Firma[2];
 
     for (int i = 0; i < 2; i++) {
-        cin >> vectAngajat[i];
+        //cin >> vectAngajat[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -757,7 +927,7 @@ void main() {
     cout << endl << endl << endl << endl;
 
     for (int i = 0; i < 2; i++) {
-        cin >> vectAntena[i];
+        //cin >> vectAntena[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -767,7 +937,7 @@ void main() {
     cout << endl << endl << endl << endl;
 
     for (int i = 0; i < 2; i++) {
-        cin >> vectFirma[i];
+        //cin >> vectFirma[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -782,7 +952,7 @@ void main() {
     for (int i = 0; i < nrRanduri; ++i) {
         for (int j = 0; j < nrColoane; ++j) {
             cout << "Introduceti informatii pentru angajatul [" << i << "][" << j << "]:\n";
-            cin >> matriceAngajati[i][j];
+            //cin >> matriceAngajati[i][j];
         }
     }
 
@@ -792,5 +962,70 @@ void main() {
         }
     }
 
+    cout << "\/\/\\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\//\/\/\\/\/" << endl << endl;
+    vectAntena[0] = antena2;
+    vectAntena[1] = antena3;
+
+    Satelit s;
+    cout << s.getDenumire() << endl;
+    cout << s.getPretFabricare() << endl;
+    cout << s.getGreutate() << endl;
+    cout << s.getNrAntene() << endl;
+    for (int i = 0; i < s.getNrAntene(); i++) {
+        cout << s.getAntene()[i] << endl;
+    }
+    cout << s.getAreCamera() << endl;
+
+    s.setDenumire("Saturn");
+    s.setGreutate(45.13);
+    s.setPretFabricare(2.1);
+    s.setAreCamera(1);
+    s.setAntene(1, vectAntena);
+
+    cout << endl << endl;;
+    cout << s.getDenumire() << endl;
+    cout << s.getPretFabricare() << endl;
+    cout << s.getGreutate() << endl;
+    cout << s.getNrAntene() << endl;
+    for (int i = 0; i < s.getNrAntene(); i++) {
+        cout << s.getAntene()[i] << endl;
+    }
+    cout << s.getAreCamera() << endl;
+    cout << endl << endl;;
+
+
+    Satelit s1("Magnum", 4.5, 11.11, 2, vectAntena, 1);
+    cout << s1 << endl;
+
+    Satelit s2 = s;
+    Satelit s3 = s1;
+
+    cout << s2 << endl;
+    cout << s3 << endl;
+
+    cout << endl;
+
+    s = s1;
+
+    cout << s << endl;
+
+    cout << endl << endl;
+
+    cout << s1() << endl;
+    cout << (float)s1 << endl;
+    cout << s1 << endl;
+    cout << endl << endl;
+
+
+    Satelit s4 = s1 + 5000;
+    cout << s1 << endl;
+    cout << s4 << endl;
+
+    cout << endl << endl;
+
+
+    Satelit s5 = 2000 - s4;
+    cout << s4 << endl;
+    cout << s5<< endl;
 
 }
