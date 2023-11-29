@@ -1,4 +1,5 @@
-#include <iostream>
+﻿#include <iostream>
+#include<fstream>
 #include <string>
 using namespace std;
 
@@ -122,7 +123,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, const Angajat& a) {
-        out << "Cod Angajat: " << a.codAngajat << ", Nume: " << a.nume << ", Varsta: " << a.varsta << ", Salariu: " << a.salariu;
+        out << "Nume: " << a.nume << ", Varsta: " << a.varsta << ", Salariu: " << a.salariu;
         return out;
     }
 
@@ -142,6 +143,30 @@ public:
         cout << "Introduceti salariul: ";
         in >> a.salariu;
         return in;
+    }
+
+    void scriereInFisBin(string numeFisier) {
+        ofstream a(numeFisier, ios::out | ios::binary);
+        int lungime = strlen(this->nume);
+        a.write((char*)&lungime, sizeof(int));
+        a.write((char*)this->nume, lungime + 1);
+        a.write((char*)&this->varsta, sizeof(int));
+        a.write((char*)&this->salariu, sizeof(float));
+        a.close();
+    }
+    void citireInFisBin(string numeFisier) {
+        ifstream a(numeFisier, ios::in | ios::binary);
+
+        if (this->nume!= NULL) {
+            delete[]this->nume;
+        }
+        int lungime;
+        a.read((char*)&lungime, sizeof(int));
+        this->nume = new char[lungime + 1];
+        a.read(this->nume, lungime + 1);
+        a.read((char*)&this->varsta, sizeof(int));
+        a.read((char*)&this->salariu, sizeof(float));
+        a.close();
     }
 };
 
@@ -316,7 +341,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, const Antena& antena) {
-        out << "Serie Antena: " << antena.serieAntena << ", Nume Antena: " << antena.numeAntena << ", Material: " << antena.material << ", Numar Senzori: " << antena.nrSenzori;
+        out <<  "Nume Antena: " << antena.numeAntena << ", Material: " << antena.material << ", Numar Senzori: " << antena.nrSenzori;
         if (antena.frecventaRadioPerSenzor != NULL && antena.nrSenzori > 0) {
             out << ", Frecventa Radio pe Senzorii Antenei: ";
             for (int i = 0; i < antena.nrSenzori; ++i) {
@@ -340,10 +365,10 @@ public:
     }
 
     friend istream& operator>>(istream& in, Antena& a) {
-
-        cout << "Introduceti numele antenei: ";
         char aux[100];
-        in >> aux;
+        cout << "Introduceti numele antenei: ";
+        in >> ws;
+        in.getline(aux, 99);
 
         if (a.numeAntena != NULL) {
             delete[] a.numeAntena;
@@ -370,6 +395,42 @@ public:
 
         return in;
     }
+
+    friend ifstream& operator>>(ifstream& in, Antena& a) {
+        char buffer[100];
+        in >> ws;
+        in.getline(buffer, 99);
+        if (a.numeAntena != NULL) {
+            delete[] a.numeAntena;
+        }
+        a.numeAntena = new char[strlen(buffer) + 1];
+        strcpy_s(a.numeAntena, strlen(buffer) + 1, buffer);
+        in >> a.material;
+        in >> a.nrSenzori;
+
+        if (a.frecventaRadioPerSenzor != NULL) {
+            delete[] a.frecventaRadioPerSenzor;
+        }
+        a.frecventaRadioPerSenzor = new float[a.nrSenzori];
+        for (int i = 0; i < a.nrSenzori; ++i) {
+            in >> a.frecventaRadioPerSenzor[i];
+        }
+        return in;
+    }
+
+    friend ofstream& operator<<(ofstream& out, const Antena& antena) {
+        out << antena.numeAntena << endl;
+        out << antena.material << endl;
+        out << antena.nrSenzori << endl;
+        if (antena.frecventaRadioPerSenzor != NULL && antena.nrSenzori > 0) {
+            for (int i = 0; i < antena.nrSenzori; ++i) {
+                out << antena.frecventaRadioPerSenzor[i] << "  ";
+            }
+        }
+        return out;
+    }
+
+
 };
 
 int Antena::nrAntena = 1;
@@ -487,7 +548,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, const Firma& firma) {
-        out << "Cod CAEN: " << firma.codCAEN << ", Denumire Firma: " << firma.denumireFirma << ", Profit: " << firma.profit << ", An Infintare: " << firma.anInfintare;
+        out<< "Denumire Firma: " << firma.denumireFirma << ", Profit: " << firma.profit << ", An Infintare: " << firma.anInfintare;
         return out;
     }
 
@@ -524,6 +585,29 @@ public:
         cout << "Introduceti anul infiintarii firmei: ";
         in >> f.anInfintare;
         return in;
+    }
+    void scriereInFisBin(string numeFisier) {
+        ofstream f(numeFisier, ios::out | ios::binary);
+        int lungime = strlen(this->denumireFirma);
+        f.write((char*)&lungime, sizeof(int));
+        f.write((char*)this->denumireFirma, lungime + 1);
+        f.write((char*)&this->anInfintare, sizeof(int));
+        f.write((char*)&this->profit, sizeof(float));
+        f.close();
+    }
+    void citireInFisBin(string numeFisier) {
+        ifstream f(numeFisier, ios::in | ios::binary);
+
+        if (this->denumireFirma != NULL) {
+            delete[]this->denumireFirma;
+        }
+        int lungime;
+        f.read((char*)&lungime, sizeof(int));
+        this->denumireFirma = new char[lungime + 1];
+        f.read(this->denumireFirma, lungime + 1);
+        f.read((char*)&this->anInfintare, sizeof(int));
+        f.read((char*)&this->profit, sizeof(float));
+        f.close();
     }
 };
 
@@ -667,14 +751,78 @@ public:
         out << "Pret fabricare: " << s.pretFabricare << endl;
         out << "Numar antene: " << s.nrAntene << endl;
         out << "Antene:" << endl;
-        for (int i = 0; i < s.nrAntene; i++) {
-            out << s.antene[i] << endl;
+        if (s.nrAntene> 0) {
+            for (int i = 0; i < s.nrAntene; i++) {
+                out << s.antene[i] << endl;
+            }
         }
-        out << endl;
-        out << "Are camera: " << s.areCamera << endl;
-        return out;
+        else {
+            cout << "--" << endl;
+        }
+            out << endl;
+            out << "Are camera: " << s.areCamera << endl;
+            return out;
+        
     }
 
+    friend istream& operator>>(istream& in, Satelit& s) {
+        
+        cout << "Introduceti denumirea satelitului: " ;
+        in >> s.denumire;
+        cout << "Introduceti greutatea: " ;
+        in >> s.greutate;
+        cout << "Introduceti pretul de fabricare: " ;
+        in >> s.pretFabricare;
+        cout << "Introduceti numarul de antene: " ;
+        in >> s.nrAntene;
+        if (s.nrAntene > 0) { 
+            delete[]s.antene;
+            s.antene = new Antena[s.nrAntene];
+            for (int i = 0; i < s.nrAntene; i++) {
+                cout << "Introduceti antena de pe pozitia [" << i + 1 << "]: ";
+                in >> s.antene[i];
+            }
+        }
+        else {
+            s.antene = NULL;
+        }
+        return in;
+    }
+    friend ofstream& operator<<(ofstream& out, const Satelit& s) {
+        out << s.denumire << endl;
+        out << s.greutate << endl;
+        out <<  s.pretFabricare << endl;
+        out  << s.nrAntene << endl;
+        if (s.nrAntene > 0) {
+            for (int i = 0; i < s.nrAntene; i++) {
+                out << s.antene[i] << endl;
+            }
+        }
+        else {
+            cout << "--" << endl;
+        }
+        out << endl;
+        out  << s.areCamera << endl;
+        return out;
+
+    }
+    friend ifstream& operator>>(ifstream& in, Satelit& s) {
+        in >> s.denumire;
+        in >> s.greutate;
+        in >> s.pretFabricare;
+        in >> s.nrAntene;
+        if (s.nrAntene > 0) {
+            delete[]s.antene;
+            s.antene = new Antena[s.nrAntene];
+            for (int i = 0; i < s.nrAntene; i++) {
+                in >> s.antene[i];
+            }
+        }
+        else {
+            s.antene = NULL;
+        }
+        return in;
+    }
     //cantitate din tone in kg
     float operator()() {
         return this->greutate * 1000;
@@ -916,7 +1064,7 @@ void main() {
     Firma* vectFirma = new Firma[2];
 
     for (int i = 0; i < 2; i++) {
-        //cin >> vectAngajat[i];
+        cin >> vectAngajat[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -927,7 +1075,7 @@ void main() {
     cout << endl << endl << endl << endl;
 
     for (int i = 0; i < 2; i++) {
-        //cin >> vectAntena[i];
+        cin >> vectAntena[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -937,7 +1085,7 @@ void main() {
     cout << endl << endl << endl << endl;
 
     for (int i = 0; i < 2; i++) {
-        //cin >> vectFirma[i];
+        cin >> vectFirma[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -952,7 +1100,7 @@ void main() {
     for (int i = 0; i < nrRanduri; ++i) {
         for (int j = 0; j < nrColoane; ++j) {
             cout << "Introduceti informatii pentru angajatul [" << i << "][" << j << "]:\n";
-            //cin >> matriceAngajati[i][j];
+            cin >> matriceAngajati[i][j];
         }
     }
 
@@ -962,7 +1110,7 @@ void main() {
         }
     }
 
-    cout << "\/\/\\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\\//\/\/\\/\/" << endl << endl;
+    cout << "======================================================================================" << endl << endl;
     vectAntena[0] = antena2;
     vectAntena[1] = antena3;
 
@@ -1002,7 +1150,7 @@ void main() {
 
     cout << s2 << endl;
     cout << s3 << endl;
-
+    
     cout << endl;
 
     s = s1;
@@ -1026,6 +1174,43 @@ void main() {
 
     Satelit s5 = 2000 - s4;
     cout << s4 << endl;
-    cout << s5<< endl;
+    cout << s5 << endl;
+    cin >> s1;
+    cout << s1 << endl;
+    cout << endl;
+    cout << "Fisiere text:" << endl;
+    cout << endl;
+     ofstream fisAntena("antene.txt", ios::out);
+     fisAntena << antena2;
+     fisAntena.close();
+     cout << endl;
+     Antena a1;
+     ifstream fisAnt("antene.txt", ios::in);
+     fisAnt >> a1;
+     cout << a1 << endl;;
+     fisAnt.close();
+
+     ofstream fisSatelit("sateliti.txt", ios::out);
+     fisSatelit << s4;
+     fisSatelit.close();
+     cout << endl;
+     Satelit satelit1;
+     ifstream fisSat("sateliti.txt", ios::in);
+     fisSat >> satelit1;
+     cout << satelit1 << endl;;
+     fisSat.close();
+     cout << endl;
+    cout << "Fisere binare: " << endl;
+    cout << endl;
+    angajat3.scriereInFisBin("angajati.bin");
+    Angajat an1;
+    an1.citireInFisBin("angajati.bin");
+    cout << an1<< endl;
+    cout << endl;
+    firma2.scriereInFisBin("firme.bin");
+    Firma fi1;
+    fi1.scriereInFisBin("firme.bin");
+    cout << fi1 << endl;
+    
 
 }
