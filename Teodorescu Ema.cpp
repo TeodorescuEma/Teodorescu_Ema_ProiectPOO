@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include<fstream>
 #include <string>
 using namespace std;
@@ -157,7 +157,7 @@ public:
     void citireInFisBin(string numeFisier) {
         ifstream a(numeFisier, ios::in | ios::binary);
 
-        if (this->nume!= NULL) {
+        if (this->nume != NULL) {
             delete[]this->nume;
         }
         int lungime;
@@ -246,8 +246,8 @@ public:
         this->material = a.material;
         this->nrSenzori = a.nrSenzori;
         if (nrSenzori > 0) {
-            this->frecventaRadioPerSenzor = new float[nrSenzori];
-            for (int i = 0; i < nrSenzori; i++) {
+            this->frecventaRadioPerSenzor = new float[a.nrSenzori];
+            for (int i = 0; i < a.nrSenzori; i++) {
                 this->frecventaRadioPerSenzor[i] = a.frecventaRadioPerSenzor[i];
             }
         }
@@ -341,7 +341,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, const Antena& antena) {
-        out <<  "Nume Antena: " << antena.numeAntena << ", Material: " << antena.material << ", Numar Senzori: " << antena.nrSenzori;
+        out << "Nume Antena: " << antena.numeAntena << ", Material: " << antena.material << ", Numar Senzori: " << antena.nrSenzori;
         if (antena.frecventaRadioPerSenzor != NULL && antena.nrSenzori > 0) {
             out << ", Frecventa Radio pe Senzorii Antenei: ";
             for (int i = 0; i < antena.nrSenzori; ++i) {
@@ -548,7 +548,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, const Firma& firma) {
-        out<< "Denumire Firma: " << firma.denumireFirma << ", Profit: " << firma.profit << ", An Infintare: " << firma.anInfintare;
+        out << "Denumire Firma: " << firma.denumireFirma << ", Profit: " << firma.profit << ", An Infintare: " << firma.anInfintare;
         return out;
     }
 
@@ -751,7 +751,7 @@ public:
         out << "Pret fabricare: " << s.pretFabricare << endl;
         out << "Numar antene: " << s.nrAntene << endl;
         out << "Antene:" << endl;
-        if (s.nrAntene> 0) {
+        if (s.nrAntene > 0) {
             for (int i = 0; i < s.nrAntene; i++) {
                 out << s.antene[i] << endl;
             }
@@ -759,23 +759,23 @@ public:
         else {
             cout << "--" << endl;
         }
-            out << endl;
-            out << "Are camera: " << s.areCamera << endl;
-            return out;
-        
+        out << endl;
+        out << "Are camera: " << s.areCamera << endl;
+        return out;
+
     }
 
     friend istream& operator>>(istream& in, Satelit& s) {
-        
-        cout << "Introduceti denumirea satelitului: " ;
+
+        cout << "Introduceti denumirea satelitului: ";
         in >> s.denumire;
-        cout << "Introduceti greutatea: " ;
+        cout << "Introduceti greutatea: ";
         in >> s.greutate;
-        cout << "Introduceti pretul de fabricare: " ;
+        cout << "Introduceti pretul de fabricare: ";
         in >> s.pretFabricare;
-        cout << "Introduceti numarul de antene: " ;
+        cout << "Introduceti numarul de antene: ";
         in >> s.nrAntene;
-        if (s.nrAntene > 0) { 
+        if (s.nrAntene > 0) {
             delete[]s.antene;
             s.antene = new Antena[s.nrAntene];
             for (int i = 0; i < s.nrAntene; i++) {
@@ -791,8 +791,8 @@ public:
     friend ofstream& operator<<(ofstream& out, const Satelit& s) {
         out << s.denumire << endl;
         out << s.greutate << endl;
-        out <<  s.pretFabricare << endl;
-        out  << s.nrAntene << endl;
+        out << s.pretFabricare << endl;
+        out << s.nrAntene << endl;
         if (s.nrAntene > 0) {
             for (int i = 0; i < s.nrAntene; i++) {
                 out << s.antene[i] << endl;
@@ -802,7 +802,7 @@ public:
             cout << "--" << endl;
         }
         out << endl;
-        out  << s.areCamera << endl;
+        out << s.areCamera << endl;
         return out;
 
     }
@@ -845,6 +845,161 @@ public:
             copie.pretFabricare -= val;
         }
         return copie;
+    }
+};
+
+class Inginer : public Angajat {
+    string departament;
+    int vechimeInDomeniu;
+    bool areFacultateTerminata;
+
+public:
+    Inginer() : Angajat() {
+        this->departament = "Mecanica";
+        this->vechimeInDomeniu = 7;
+        this->areFacultateTerminata = true;
+    }
+
+    Inginer(const char* nume, int varsta, float salariu, string departament, int vechime, bool facultateTerminata) : Angajat(nume, varsta, salariu) {
+        this->departament = departament;
+        this->vechimeInDomeniu = vechime;
+        this->areFacultateTerminata = facultateTerminata;
+    }
+
+    Inginer(int codAngajat, const char* nume, int varsta, float salariu, string departament, int vechime, bool facultateTerminata): Angajat(codAngajat, nume, varsta, salariu) {
+        this->departament = departament;
+        this->vechimeInDomeniu = vechime;
+        this->areFacultateTerminata = facultateTerminata;
+    }
+
+    Inginer(const Inginer& ing) : Angajat(ing) {
+        this->departament = ing.departament;
+        this->vechimeInDomeniu = ing.vechimeInDomeniu;
+        this->areFacultateTerminata = ing.areFacultateTerminata;
+    }
+
+    string getDepartament() {
+        return departament;
+    }
+
+    void setDepartament(string departament) {
+        departament = departament;
+    }
+
+    int getVechimeInDomeniu() {
+        return vechimeInDomeniu;
+    }
+
+    void setVechimeInDomeniu(int vechimeInDomeniu) {
+        vechimeInDomeniu = vechimeInDomeniu;
+    }
+
+    bool getAreFacultateTerminata() {
+        return areFacultateTerminata;
+    }
+
+    void setAreFacultateTerminata(bool facultateTerminata) {
+        areFacultateTerminata = facultateTerminata;
+    }
+
+    Inginer& operator=(const Inginer& ing) {
+        if (this != &ing) {
+            Angajat::operator=(ing);
+            this->departament = ing.departament;
+            this->vechimeInDomeniu = ing.vechimeInDomeniu;
+            this->areFacultateTerminata = ing.areFacultateTerminata;
+        }
+        return *this;
+    }
+
+    friend ostream& operator << (ostream& out, const Inginer& ing) {
+        out << (Angajat&)ing;
+        out << ", Departament: " << ing.departament << ", Vechime in Domeniu: " << ing.vechimeInDomeniu
+            << "ani, Facultate Terminata: " << (ing.areFacultateTerminata ? "Da" : "Nu") << endl;
+        return out;
+    }
+
+    ~Inginer() {
+
+    }
+};
+
+class Manager : public Angajat {
+    string departamentManageriat;
+    int aniFunctie;
+    int nrSubordonati;
+
+public:
+    Manager() : Angajat() {
+        this->departamentManageriat = "Resurse umane";
+        this->aniFunctie = 4;
+        this->nrSubordonati = 56;
+    }
+
+    Manager(const char* nume, int varsta, float salariu, string departamentManageriat, int aniFunctie, int nrSubordonati)
+        : Angajat(nume, varsta, salariu) {
+        this->departamentManageriat = departamentManageriat;
+        this->aniFunctie = aniFunctie;
+        this->nrSubordonati = nrSubordonati;
+    }
+
+    Manager(int codAngajat, const char* nume, int varsta, float salariu, string departamentManageriat, int aniFunctie, int nrSubordonati)
+        : Angajat(codAngajat, nume, varsta, salariu) {
+        this->departamentManageriat = departamentManageriat;
+        this->aniFunctie = aniFunctie;
+        this->nrSubordonati = nrSubordonati;
+    }
+
+
+    string getDepartamentManageriat() {
+        return departamentManageriat;
+    }
+
+    void setDepartamentManageriat(string departamentManageriat) {
+        this->departamentManageriat = departamentManageriat;
+    }
+
+    int getAniFunctie() {
+        return aniFunctie;
+    }
+
+    void setAniFunctie(int aniFunctie) {
+        this->aniFunctie = aniFunctie;
+    }
+
+    int getNrSubordonati() {
+        return nrSubordonati;
+    }
+
+    void setNrSubordonati(int nrSubordonati) {
+        this->nrSubordonati = nrSubordonati;
+    }
+
+    Manager(const Manager& manager) : Angajat(manager) {
+        this->departamentManageriat = manager.departamentManageriat;
+        this->aniFunctie = manager.aniFunctie;
+        this->nrSubordonati = manager.nrSubordonati;
+    }
+
+    ~Manager() {
+
+    }
+
+    Manager& operator=(const Manager& manager) {
+        if (this != &manager) {
+            Angajat::operator=(manager);
+            this->departamentManageriat = manager.departamentManageriat;
+            this->aniFunctie = manager.aniFunctie;
+            this->nrSubordonati = manager.nrSubordonati;
+        }
+        return *this;
+    }
+
+    friend ostream& operator<<(ostream& out, const Manager& manager) {
+        out << (Angajat&)manager;
+        out << ", Departament Manageriat: " << manager.departamentManageriat << ", Ani in Functie: " << manager.aniFunctie
+            << " ani, Numar Subordonati: " << manager.nrSubordonati << " angajati" << endl;
+        return out;
     }
 };
 
@@ -1150,7 +1305,7 @@ void main() {
 
     cout << s2 << endl;
     cout << s3 << endl;
-    
+
     cout << endl;
 
     s = s1;
@@ -1180,37 +1335,86 @@ void main() {
     cout << endl;
     cout << "Fisiere text:" << endl;
     cout << endl;
-     ofstream fisAntena("antene.txt", ios::out);
-     fisAntena << antena2;
-     fisAntena.close();
-     cout << endl;
-     Antena a1;
-     ifstream fisAnt("antene.txt", ios::in);
-     fisAnt >> a1;
-     cout << a1 << endl;;
-     fisAnt.close();
+    ofstream fisAntena("antene.txt", ios::out);
+    fisAntena << antena2;
+    fisAntena.close();
+    cout << endl;
+    Antena a1;
+    ifstream fisAnt("antene.txt", ios::in);
+    fisAnt >> a1;
+    cout << a1 << endl;;
+    fisAnt.close();
 
-     ofstream fisSatelit("sateliti.txt", ios::out);
-     fisSatelit << s4;
-     fisSatelit.close();
-     cout << endl;
-     Satelit satelit1;
-     ifstream fisSat("sateliti.txt", ios::in);
-     fisSat >> satelit1;
-     cout << satelit1 << endl;;
-     fisSat.close();
-     cout << endl;
+    ofstream fisSatelit("sateliti.txt", ios::out);
+    fisSatelit << s4;
+    fisSatelit.close();
+    cout << endl;
+    Satelit satelit1;
+    ifstream fisSat("sateliti.txt", ios::in);
+    fisSat >> satelit1;
+    cout << satelit1 << endl;;
+    fisSat.close();
+    cout << endl;
     cout << "Fisere binare: " << endl;
     cout << endl;
     angajat3.scriereInFisBin("angajati.bin");
     Angajat an1;
     an1.citireInFisBin("angajati.bin");
-    cout << an1<< endl;
+    cout << an1 << endl;
     cout << endl;
     firma2.scriereInFisBin("firme.bin");
     Firma fi1;
     fi1.scriereInFisBin("firme.bin");
     cout << fi1 << endl;
-    
+
+
+    cout << endl << endl << "====================================================================" << endl;
+    cout << "MOSTENIRE" << endl << endl;
+    Inginer ing;
+    cout << ing.getDepartament() << endl;
+    cout << ing.getVechimeInDomeniu() << endl;
+    cout << ing.getAreFacultateTerminata() << endl;
+    ing.setDepartament("ElectroTehnic");
+    ing.setVechimeInDomeniu(3);
+    ing.setAreFacultateTerminata(1);
+    cout << ing << endl;
+
+    Inginer ing1(41, "Mircea Alexandru", 28, 4700, "Magnetica", 4, 1);
+    cout << ing1 << endl;
+
+    Inginer ing2 = ing;
+    cout << ing2 << endl;
+
+    ing2 = ing1;
+    cout << ing2 << endl;
+
+
+    cout << "--------------------------------------------" << endl;
+    cout << "--------------------------------------------" << endl;
+
+    cout << "MOSTENIRE" << endl << endl;
+    Manager m;
+
+    cout << m.getDepartamentManageriat() << endl;
+    cout << m.getAniFunctie() << endl;
+    cout << m.getNrSubordonati() << endl;
+
+    m.setDepartamentManageriat("Marketing");
+    m.setAniFunctie(2);
+    m.setNrSubordonati(100);
+
+    cout << m << endl;
+
+    Manager m1(54, "Teodorescu Ema", 22, 8240, "IT", 3, 450);
+    cout << m1 << endl;
+
+    Manager m2 = m;
+    cout << m2 << endl;
+
+    m2 = m1;
+
+    cout << m2 << endl;
 
 }
+
+
