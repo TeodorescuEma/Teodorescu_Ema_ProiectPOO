@@ -1,9 +1,23 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include<fstream>
 #include <string>
+#include <fstream>
+
 using namespace std;
 
-class Angajat {
+class CalculSalariu {
+
+public:
+    virtual float salariuLunar() = 0;
+};
+
+class FunctieInCampulMuncii {
+public:
+    virtual string recunoasteGrad() = 0;
+};
+
+class Angajat : public CalculSalariu, public FunctieInCampulMuncii {
+protected:
     const int codAngajat;
     static int nrMaximOre;
     char* nume;
@@ -11,34 +25,37 @@ class Angajat {
     float salariu;
 public:
 
-
-
     Angajat() : codAngajat(0) {
         this->nume = new char[strlen("Andrei") + 1];
-        strcpy_s(this->nume, strlen("Andrei") + 1, "Andrei");
+        strcpy(this->nume, "Andrei");
         this->varsta = 27;
         this->salariu = 4500;
     }
 
-
+    string recunoasteGrad() {
+        return "Angajat";
+    }
+    float salariuLunar() {
+        return salariu;
+    }
 
     Angajat(const char* nume, int varsta, float salariu) : codAngajat(0) {
         this->nume = new char[strlen(nume) + 1];
-        strcpy_s(this->nume, strlen(nume) + 1, nume);
+        strcpy(this->nume, nume);
         this->varsta = varsta;
         this->salariu = salariu;
     }
 
     Angajat(int codAngajat, const char* nume, int varsta, float salariu) : codAngajat(codAngajat) {
         this->nume = new char[strlen(nume) + 1];
-        strcpy_s(this->nume, strlen(nume) + 1, nume);
+        strcpy(this->nume, nume);
         this->varsta = varsta;
         this->salariu = salariu;
     }
 
     Angajat(const Angajat& a) :codAngajat(a.codAngajat) {
         this->nume = new char[strlen(a.nume) + 1];
-        strcpy_s(this->nume, strlen(a.nume) + 1, a.nume);
+        strcpy(this->nume, a.nume);
         this->varsta = a.varsta;
         this->salariu = a.salariu;
     }
@@ -73,7 +90,7 @@ public:
     void setNume(const char* nume) {
         delete[] this->nume;
         this->nume = new char[strlen(nume) + 1];
-        strcpy_s(this->nume, strlen(nume) + 1, nume);
+        strcpy(this->nume, nume);
     }
 
     int getVarsta() {
@@ -95,17 +112,20 @@ public:
     friend float valoareBonusAnual(Angajat a);
 
     Angajat& operator=(const Angajat& a) {
-        if (this != &a) {
-            if (nume != nullptr) {
-                delete[] nume;
-            }
-
-            nume = new char[strlen(a.nume) + 1];
-            strcpy_s(nume, strlen(a.nume) + 1, a.nume);
-
-            varsta = a.varsta;
-            salariu = a.salariu;
+        if (this == &a) {
+            return *this;
         }
+
+        if (nume != nullptr) {
+            delete[] nume;
+        }
+
+        nume = new char[strlen(a.nume) + 1];
+        strcpy(nume, a.nume);
+
+        varsta = a.varsta;
+        salariu = a.salariu;
+
         return *this;
     }
 
@@ -123,7 +143,7 @@ public:
     }
 
     friend ostream& operator<<(ostream& out, const Angajat& a) {
-        out << "Nume: " << a.nume << ", Varsta: " << a.varsta << ", Salariu: " << a.salariu;
+        out << "Cod Angajat: " << a.codAngajat << ", Nume: " << a.nume << ", Varsta: " << a.varsta << " ani, Salariu: " << a.salariu << " lei";
         return out;
     }
 
@@ -135,7 +155,7 @@ public:
         delete[] a.nume;
 
         a.nume = new char[strlen(aux) + 1];
-        strcpy_s(a.nume, strlen(aux) + 1, aux);
+        strcpy(a.nume, aux);
 
         cout << "Introduceti varsta: ";
         in >> a.varsta;
@@ -144,7 +164,6 @@ public:
         in >> a.salariu;
         return in;
     }
-
     void scriereInFisBin(string numeFisier) {
         ofstream a(numeFisier, ios::out | ios::binary);
         int lungime = strlen(this->nume);
@@ -168,6 +187,7 @@ public:
         a.read((char*)&this->salariu, sizeof(float));
         a.close();
     }
+
 };
 
 int Angajat::nrMaximOre = 40;
@@ -186,13 +206,10 @@ class Antena {
     int nrSenzori;
     float* frecventaRadioPerSenzor;
 public:
-    static int getNrAntena() {
-        return nrAntena;
-    }
 
     Antena() : serieAntena(0) {
         this->numeAntena = new char[strlen("Satelit") + 1];
-        strcpy_s(this->numeAntena, strlen("Satelit") + 1, "Satelit");
+        strcpy(this->numeAntena, "Satelit");
         this->material = "Metal";
         this->nrSenzori = 0;
         this->frecventaRadioPerSenzor = NULL;
@@ -202,7 +219,7 @@ public:
 
     Antena(const char* numeAntena, string material) : serieAntena(0) {
         this->numeAntena = new char[strlen(numeAntena) + 1];
-        strcpy_s(this->numeAntena, strlen(numeAntena) + 1, numeAntena);
+        strcpy(this->numeAntena, numeAntena);
         this->material = material;
         this->nrSenzori = 0;
         this->frecventaRadioPerSenzor = NULL;
@@ -213,7 +230,7 @@ public:
 
     Antena(int serieAntena, const char* numeAntena, string material, int nrSenzori, float* frecventaRadioPerSenzor) : serieAntena(serieAntena) {
         this->numeAntena = new char[strlen(numeAntena) + 1];
-        strcpy_s(this->numeAntena, strlen(numeAntena) + 1, numeAntena);
+        strcpy(this->numeAntena, numeAntena);
         this->material = material;
         this->nrSenzori = nrSenzori;
         if (nrSenzori > 0) {
@@ -242,12 +259,12 @@ public:
 
     Antena(const Antena& a) :serieAntena(a.serieAntena) {
         this->numeAntena = new char[strlen(a.numeAntena) + 1];
-        strcpy_s(this->numeAntena, strlen(a.numeAntena) + 1, a.numeAntena);
+        strcpy(this->numeAntena, a.numeAntena);
         this->material = a.material;
         this->nrSenzori = a.nrSenzori;
         if (nrSenzori > 0) {
-            this->frecventaRadioPerSenzor = new float[a.nrSenzori];
-            for (int i = 0; i < a.nrSenzori; i++) {
+            this->frecventaRadioPerSenzor = new float[nrSenzori];
+            for (int i = 0; i < nrSenzori; i++) {
                 this->frecventaRadioPerSenzor[i] = a.frecventaRadioPerSenzor[i];
             }
         }
@@ -260,8 +277,13 @@ public:
         return serieAntena;
     }
 
+    static int getNrAntena() {
+        return nrAntena;
+    }
 
-
+    static void setNrAntena(int nr) {
+        nrAntena = nr;
+    }
 
     const char* getNumeAntena() {
         return numeAntena;
@@ -272,7 +294,7 @@ public:
             delete[] this->numeAntena;
         }
         this->numeAntena = new char[strlen(numeAntena) + 1];
-        strcpy_s(this->numeAntena, strlen(numeAntena) + 1, numeAntena);
+        strcpy(this->numeAntena, numeAntena);
     }
 
     string getMaterial() {
@@ -316,32 +338,34 @@ public:
 
 
     Antena& operator=(const Antena& an) {
-        if (this != &an) {
-
-            if (numeAntena != nullptr) {
-                delete[] numeAntena;
-            }
-
-            numeAntena = new char[strlen(an.numeAntena) + 1];
-            strcpy_s(numeAntena, strlen(an.numeAntena) + 1, an.numeAntena);
-
-            material = an.material;
-            nrSenzori = an.nrSenzori;
-
-            if (frecventaRadioPerSenzor != nullptr) {
-                delete[] frecventaRadioPerSenzor;
-            }
-
-            frecventaRadioPerSenzor = new float[nrSenzori];
-            for (int i = 0; i < nrSenzori; i++) {
-                frecventaRadioPerSenzor[i] = an.frecventaRadioPerSenzor[i];
-            }
+        if (this == &an) {
+            return *this;
         }
+
+        if (numeAntena != nullptr) {
+            delete[] numeAntena;
+        }
+
+        numeAntena = new char[strlen(an.numeAntena) + 1];
+        strcpy(numeAntena, an.numeAntena);
+
+        material = an.material;
+        nrSenzori = an.nrSenzori;
+
+        if (frecventaRadioPerSenzor != nullptr) {
+            delete[] frecventaRadioPerSenzor;
+        }
+
+        frecventaRadioPerSenzor = new float[nrSenzori];
+        for (int i = 0; i < nrSenzori; i++) {
+            frecventaRadioPerSenzor[i] = an.frecventaRadioPerSenzor[i];
+        }
+
         return *this;
     }
 
     friend ostream& operator<<(ostream& out, const Antena& antena) {
-        out << "Nume Antena: " << antena.numeAntena << ", Material: " << antena.material << ", Numar Senzori: " << antena.nrSenzori;
+        out << "Serie Antena: " << antena.serieAntena << ", Nume Antena: " << antena.numeAntena << ", Material: " << antena.material << ", Numar Senzori: " << antena.nrSenzori;
         if (antena.frecventaRadioPerSenzor != NULL && antena.nrSenzori > 0) {
             out << ", Frecventa Radio pe Senzorii Antenei: ";
             for (int i = 0; i < antena.nrSenzori; ++i) {
@@ -365,17 +389,17 @@ public:
     }
 
     friend istream& operator>>(istream& in, Antena& a) {
-        char aux[100];
+
         cout << "Introduceti numele antenei: ";
-        in >> ws;
-        in.getline(aux, 99);
+        char aux[100];
+        in >> aux;
 
         if (a.numeAntena != NULL) {
             delete[] a.numeAntena;
         }
 
         a.numeAntena = new char[strlen(aux) + 1];
-        strcpy_s(a.numeAntena, strlen(aux) + 1, aux);
+        strcpy(a.numeAntena, aux);
         cout << "Introduceti materialul antenei: ";
         in >> a.material;
 
@@ -395,7 +419,6 @@ public:
 
         return in;
     }
-
     friend ifstream& operator>>(ifstream& in, Antena& a) {
         char buffer[100];
         in >> ws;
@@ -429,8 +452,6 @@ public:
         }
         return out;
     }
-
-
 };
 
 int Antena::nrAntena = 1;
@@ -447,13 +468,10 @@ class Firma {
     int anInfintare;
 
 public:
-    static int getNrFirme() {
-        return nrFirme;
-    }
 
     Firma() : codCAEN("0000") {
         this->denumireFirma = new char[strlen("Star Elect") + 1];
-        strcpy_s(this->denumireFirma, strlen("Star Elect") + 1, "Star Elect");
+        strcpy(this->denumireFirma, "Star Elect");
         this->profit = 2365;
         this->anInfintare = 1997;
         nrFirme++;
@@ -461,7 +479,7 @@ public:
 
     Firma(string codCAEN, const char* denumireFirma, float profit, int anInfintare) : codCAEN(codCAEN) {
         this->denumireFirma = new char[strlen(denumireFirma) + 1];
-        strcpy_s(this->denumireFirma, strlen(denumireFirma) + 1, denumireFirma);
+        strcpy(this->denumireFirma, denumireFirma);
         this->profit = profit;
         this->anInfintare = anInfintare;
         nrFirme++;
@@ -470,7 +488,7 @@ public:
 
     Firma(const char* denumireFirma, float profit, int anInfintare) : codCAEN("0000") {
         this->denumireFirma = new char[strlen(denumireFirma) + 1];
-        strcpy_s(this->denumireFirma, strlen(denumireFirma) + 1, denumireFirma);
+        strcpy(this->denumireFirma, denumireFirma);
         this->profit = profit;
         this->anInfintare = anInfintare;
         nrFirme++;
@@ -478,7 +496,7 @@ public:
 
     Firma(const Firma& f) :codCAEN(f.codCAEN) {
         this->denumireFirma = new char[strlen(f.denumireFirma) + 1];
-        strcpy_s(this->denumireFirma, strlen(f.denumireFirma) + 1, f.denumireFirma);
+        strcpy(this->denumireFirma, f.denumireFirma);
         this->profit = f.profit;
         this->anInfintare = f.anInfintare;
         nrFirme++;
@@ -493,8 +511,12 @@ public:
         return this->codCAEN;
     }
 
-
-
+    static int getNrFirme() {
+        return nrFirme;
+    }
+    static void setNrFirme(int nr) {
+        nrFirme = nr;
+    }
 
     const char* getDenumireFirma() {
         return this->denumireFirma;
@@ -505,7 +527,7 @@ public:
             delete[] this->denumireFirma;
         }
         this->denumireFirma = new char[strlen(denumireFirma) + 1];
-        strcpy_s(this->denumireFirma, strlen(denumireFirma) + 1, denumireFirma);
+        strcpy(this->denumireFirma, denumireFirma);
     }
 
     float getProfit() {
@@ -531,24 +553,25 @@ public:
     }
 
     Firma& operator=(const Firma& f) {
-        if (this != &f) {
-
-
-            if (denumireFirma != nullptr) {
-                delete[] denumireFirma;
-            }
-
-            denumireFirma = new char[strlen(f.denumireFirma) + 1];
-            strcpy_s(denumireFirma, strlen(f.denumireFirma) + 1, f.denumireFirma);
-
-            profit = f.profit;
-            anInfintare = f.anInfintare;
+        if (this == &f) {
+            return *this;
         }
+
+        if (denumireFirma != nullptr) {
+            delete[] denumireFirma;
+        }
+
+        denumireFirma = new char[strlen(f.denumireFirma) + 1];
+        strcpy(denumireFirma, f.denumireFirma);
+
+        profit = f.profit;
+        anInfintare = f.anInfintare;
+
         return *this;
     }
 
     friend ostream& operator<<(ostream& out, const Firma& firma) {
-        out << "Denumire Firma: " << firma.denumireFirma << ", Profit: " << firma.profit << ", An Infintare: " << firma.anInfintare;
+        out << "Cod CAEN: " << firma.codCAEN << ", Denumire Firma: " << firma.denumireFirma << ", Profit: " << firma.profit << ", An Infintare: " << firma.anInfintare;
         return out;
     }
 
@@ -577,7 +600,7 @@ public:
         }
 
         f.denumireFirma = new char[strlen(aux) + 1];
-        strcpy_s(f.denumireFirma, strlen(aux) + 1, aux);
+        strcpy(f.denumireFirma, aux);
 
         cout << "Introduceti profitul firmei: ";
         in >> f.profit;
@@ -612,12 +635,14 @@ public:
 };
 
 int Firma::nrFirme = 50;
+
+
 class Satelit {
     string denumire;
     float greutate;
     float pretFabricare;
     int nrAntene;
-    Antena* antene;
+    Antena** antene;
     bool areCamera;
 
 public:
@@ -626,20 +651,20 @@ public:
         this->greutate = 36.5;
         this->pretFabricare = 3.21;
         this->nrAntene = 0;
-        this->antene = NULL;
+        this->antene = nullptr;
         this->areCamera = false;
     }
 
     // Constructor cu parametri
-    Satelit(string denumire, float greutate, float pretFabricare, int nrAntene, Antena* antene, bool areCamera) {
+    Satelit(string denumire, float greutate, float pretFabricare, int nrAntene, Antena** antene, bool areCamera) {
         this->denumire = denumire;
         this->greutate = greutate;
         this->pretFabricare = pretFabricare;
         this->nrAntene = nrAntene;
         if (nrAntene > 0) {
-            this->antene = new Antena[nrAntene];
+            this->antene = new Antena * [nrAntene];
             for (int i = 0; i < nrAntene; ++i) {
-                this->antene[i] = antene[i];
+                this->antene[i] = new Antena(*antene[i]);
             }
         }
         else {
@@ -656,9 +681,9 @@ public:
         this->pretFabricare = s.pretFabricare;
         this->nrAntene = s.nrAntene;
         if (s.nrAntene > 0) {
-            this->antene = new Antena[nrAntene];
-            for (int i = 0; i < s.nrAntene; ++i) {
-                this->antene[i] = s.antene[i];
+            this->antene = new Antena * [nrAntene];
+            for (int i = 0; i < nrAntene; ++i) {
+                this->antene[i] = new Antena(*s.antene[i]);
             }
         }
         else {
@@ -670,15 +695,20 @@ public:
     // Operatorul de atribuire
     Satelit& operator=(const Satelit& s) {
         if (this != &s) {
-            delete[] antene;
+            if (this->antene != NULL) {
+                for (int i = 0; i < this->nrAntene; i++) {
+                    delete this->antene[i];
+                }
+                delete[] this->antene;
+            }
             this->denumire = s.denumire;
             this->greutate = s.greutate;
             this->pretFabricare = s.pretFabricare;
             this->nrAntene = s.nrAntene;
             if (s.nrAntene > 0) {
-                this->antene = new Antena[nrAntene];
-                for (int i = 0; i < s.nrAntene; ++i) {
-                    this->antene[i] = s.antene[i];
+                this->antene = new Antena * [nrAntene];
+                for (int i = 0; i < nrAntene; ++i) {
+                    this->antene[i] = new Antena(*s.antene[i]);
                 }
             }
             else {
@@ -690,7 +720,13 @@ public:
     }
 
     ~Satelit() {
-        delete[] this->antene;
+        if (this->antene != NULL) {
+            for (int i = 0; i < this->nrAntene; i++) {
+                delete this->antene[i];
+            }
+            delete[] this->antene;
+        }
+
     }
 
     string getDenumire() {
@@ -721,17 +757,22 @@ public:
         return nrAntene;
     }
 
-    Antena* getAntene() {
+    Antena** getAntene() {
         return this->antene;
     }
 
-    void setAntene(int nrAntene, Antena* antene) {
+    void setAntene(int nrAntene, Antena** antene) {
         if (nrAntene > 0 && antene != NULL) {
             this->nrAntene = nrAntene;
-            delete[] this->antene;
-            this->antene = new Antena[this->nrAntene];
-            for (int i = 0; i < this->nrAntene; ++i) {
-                this->antene[i] = antene[i];
+            if (this->antene != NULL) {
+                for (int i = 0; i < this->nrAntene; i++) {
+                    delete this->antene[i];
+                }
+                delete[] this->antene;
+            }
+            this->antene = new Antena * [nrAntene];
+            for (int i = 0; i < nrAntene; ++i) {
+                this->antene[i] = new Antena(*antene[i]);
             }
         }
 
@@ -751,78 +792,14 @@ public:
         out << "Pret fabricare: " << s.pretFabricare << endl;
         out << "Numar antene: " << s.nrAntene << endl;
         out << "Antene:" << endl;
-        if (s.nrAntene > 0) {
-            for (int i = 0; i < s.nrAntene; i++) {
-                out << s.antene[i] << endl;
-            }
-        }
-        else {
-            cout << "--" << endl;
+        for (int i = 0; i < s.nrAntene; i++) {
+            out << *s.antene[i] << endl;
         }
         out << endl;
         out << "Are camera: " << s.areCamera << endl;
         return out;
-
     }
 
-    friend istream& operator>>(istream& in, Satelit& s) {
-
-        cout << "Introduceti denumirea satelitului: ";
-        in >> s.denumire;
-        cout << "Introduceti greutatea: ";
-        in >> s.greutate;
-        cout << "Introduceti pretul de fabricare: ";
-        in >> s.pretFabricare;
-        cout << "Introduceti numarul de antene: ";
-        in >> s.nrAntene;
-        if (s.nrAntene > 0) {
-            delete[]s.antene;
-            s.antene = new Antena[s.nrAntene];
-            for (int i = 0; i < s.nrAntene; i++) {
-                cout << "Introduceti antena de pe pozitia [" << i + 1 << "]: ";
-                in >> s.antene[i];
-            }
-        }
-        else {
-            s.antene = NULL;
-        }
-        return in;
-    }
-    friend ofstream& operator<<(ofstream& out, const Satelit& s) {
-        out << s.denumire << endl;
-        out << s.greutate << endl;
-        out << s.pretFabricare << endl;
-        out << s.nrAntene << endl;
-        if (s.nrAntene > 0) {
-            for (int i = 0; i < s.nrAntene; i++) {
-                out << s.antene[i] << endl;
-            }
-        }
-        else {
-            cout << "--" << endl;
-        }
-        out << endl;
-        out << s.areCamera << endl;
-        return out;
-
-    }
-    friend ifstream& operator>>(ifstream& in, Satelit& s) {
-        in >> s.denumire;
-        in >> s.greutate;
-        in >> s.pretFabricare;
-        in >> s.nrAntene;
-        if (s.nrAntene > 0) {
-            delete[]s.antene;
-            s.antene = new Antena[s.nrAntene];
-            for (int i = 0; i < s.nrAntene; i++) {
-                in >> s.antene[i];
-            }
-        }
-        else {
-            s.antene = NULL;
-        }
-        return in;
-    }
     //cantitate din tone in kg
     float operator()() {
         return this->greutate * 1000;
@@ -846,6 +823,72 @@ public:
         }
         return copie;
     }
+    friend istream& operator>>(istream& in, Satelit& s) {
+        cout << "Introduceti denumirea satelitului: ";
+        in >> s.denumire;
+        cout << "Introduceti greutatea: ";
+        in >> s.greutate;
+        cout << "Introduceti pretul de fabricare: ";
+        in >> s.pretFabricare;
+        cout << "Introduceti numarul de antene: ";
+        in >> s.nrAntene;
+        if (s.nrAntene > 0) {
+            if (s.antene != NULL) {
+                for (int i = 0; i < s.nrAntene; i++) {
+                    delete[]s.antene[i];
+                }
+                delete[]s.antene;
+            }
+            s.antene = new Antena * [s.nrAntene];
+            for (int i = 0; i < s.nrAntene; i++) {
+                cout << "Introduceti antena de pe pozitia [" << i + 1 << "]: ";
+
+                in >> *s.antene[i];
+            }
+        }
+        else {
+            s.antene = NULL;
+        }
+        return in;
+    }
+    friend ofstream& operator<<(ofstream& out, const Satelit& s) {
+        out << s.denumire << endl;
+        out << s.greutate << endl;
+        out << s.pretFabricare << endl;
+        out << s.nrAntene << endl;
+        if (s.nrAntene > 0) {
+            for (int i = 0; i < s.nrAntene; i++) {
+                out << *s.antene[i];
+            }
+        }
+        out << s.areCamera << endl;
+        return out;
+
+    }
+    friend ifstream& operator>>(ifstream& in, Satelit& s) {
+        in >> s.denumire;
+        in >> s.greutate;
+        in >> s.pretFabricare;
+        in >> s.nrAntene;
+        if (s.nrAntene > 0) {
+            if (s.antene != NULL) {
+                for (int i = 0; i < s.nrAntene; i++) {
+                    delete[]s.antene[i];
+                }
+                delete[]s.antene;
+            }
+            s.antene = new Antena * [s.nrAntene];
+            for (int i = 0; i < s.nrAntene; i++) {
+                Antena aux;
+                in >> aux;
+                s.antene[i] = new Antena(aux);
+            }
+        }
+        else {
+            s.antene = NULL;
+        }
+        return in;
+    }
 };
 
 class Inginer : public Angajat {
@@ -860,13 +903,15 @@ public:
         this->areFacultateTerminata = true;
     }
 
-    Inginer(const char* nume, int varsta, float salariu, string departament, int vechime, bool facultateTerminata) : Angajat(nume, varsta, salariu) {
+    Inginer(const char* nume, int varsta, float salariu, string departament, int vechime, bool facultateTerminata)
+        : Angajat(nume, varsta, salariu) {
         this->departament = departament;
         this->vechimeInDomeniu = vechime;
         this->areFacultateTerminata = facultateTerminata;
     }
 
-    Inginer(int codAngajat, const char* nume, int varsta, float salariu, string departament, int vechime, bool facultateTerminata): Angajat(codAngajat, nume, varsta, salariu) {
+    Inginer(int codAngajat, const char* nume, int varsta, float salariu, string departament, int vechime, bool facultateTerminata)
+        : Angajat(codAngajat, nume, varsta, salariu) {
         this->departament = departament;
         this->vechimeInDomeniu = vechime;
         this->areFacultateTerminata = facultateTerminata;
@@ -922,6 +967,13 @@ public:
     ~Inginer() {
 
     }
+
+    string recunoasteGrad() {
+        return "Inginer";
+    }
+    float salariuLunar() {
+        return salariu + 500;
+    }
 };
 
 class Manager : public Angajat {
@@ -931,7 +983,7 @@ class Manager : public Angajat {
 
 public:
     Manager() : Angajat() {
-        this->departamentManageriat = "Resurse umane";
+        this->departamentManageriat = "Resurse Umane";
         this->aniFunctie = 4;
         this->nrSubordonati = 56;
     }
@@ -1001,6 +1053,14 @@ public:
             << " ani, Numar Subordonati: " << manager.nrSubordonati << " angajati" << endl;
         return out;
     }
+
+
+    string recunoasteGrad() {
+        return "Manager";
+    }
+    float salariuLunar() {
+        return salariu + 2000;
+    }
 };
 
 
@@ -1018,8 +1078,9 @@ void main() {
     angajat2.afisareObj();
     cout << endl;
 
-    cout << "Nr. Maxim Ore pentru Angajati: " << Angajat::getNrMaximOre() << endl;
-
+    cout << "Nr. Maxim Ore pentru Angajati: " << angajat.getNrMaximOre() << endl;
+    cout << "Nr. Maxim Ore pentru Angajati: " << angajat1.getNrMaximOre() << endl;
+    cout << "Nr. Maxim Ore pentru Angajati: " << angajat2.getNrMaximOre() << endl;
 
 
 
@@ -1040,8 +1101,9 @@ void main() {
     antena2.afisareObj();
     cout << endl;
 
-    cout << "Nr. Antene: " << Antena::getNrAntena() << endl;
-
+    cout << "Nr. Antene: " << antena.getNrAntena() << endl;
+    cout << "Nr. Antene: " << antena1.getNrAntena() << endl;
+    cout << "Nr. Antene: " << antena2.getNrAntena() << endl;
 
 
     cout << endl << endl << "----------------------------------------------" << endl;
@@ -1060,11 +1122,9 @@ void main() {
 
 
 
-    cout << "Nr. Firme: " << Firma::getNrFirme() << endl;
-
-    cout << endl << endl << "----------------------------------------------" << endl;
-    cout << endl << endl << "----------------------------------------------" << endl;
-    cout << endl << endl << "----------------------------------------------" << endl;
+    cout << "Nr. Firme: " << firma.getNrFirme() << endl;
+    cout << "Nr. Firme: " << firma1.getNrFirme() << endl;
+    cout << "Nr. Firme: " << firma2.getNrFirme() << endl;
     cout << endl << endl << "----------------------------------------------" << endl;
     cout << endl << endl << "----------------------------------------------" << endl;
     cout << "Getteri si Setteri: " << endl << endl;
@@ -1106,13 +1166,14 @@ void main() {
         cout << antena3.getFrecventaRadioPerSenzor()[i] << ", ";
     }
     cout << endl;
+    cout << antena3.getNrAntena() << endl;
     cout << costRealizareSenzori(antena3) << endl;
 
 
     antena3.setNumeAntena("Antena Wi-fi Helicopter");
     antena3.setMaterial("Carbon");
-    antena3.setFrecventaRadioPerSenzor(4, new float[4] {22, 155, 45, 11});
-
+    antena3.setFrecventaRadioPerSenzor(4, new float[4] { 22, 155, 45, 11 });
+    antena3.setNrAntena(546);
     cout << endl << endl;
 
     cout << antena3.getSerieAntena() << endl;
@@ -1123,6 +1184,7 @@ void main() {
         cout << antena3.getFrecventaRadioPerSenzor()[i] << ", ";
     }
     cout << endl;
+    cout << antena3.getNrAntena() << endl;
     cout << costRealizareSenzori(antena3) << endl;
 
     cout << "=============================================" << endl << endl;
@@ -1133,12 +1195,12 @@ void main() {
     cout << firma3.getDenumireFirma() << endl;
     cout << firma3.getProfit() << endl;
     cout << firma3.getAnInfintare() << endl;
-
+    cout << firma3.getNrFirme() << endl;
 
     firma3.setDenumireFirma("T&E Association");
     firma3.setProfit(15000.0);
     firma3.setAnInfintare(1995);
-
+    firma3.setNrFirme(111);
 
 
     cout << endl << endl;
@@ -1146,6 +1208,7 @@ void main() {
     cout << firma3.getDenumireFirma() << endl;
     cout << firma3.getProfit() << endl;
     cout << firma3.getAnInfintare() << endl;
+    cout << firma3.getNrFirme() << endl;
 
 
     cout << "OPERATORI" << endl << endl << endl;
@@ -1230,7 +1293,7 @@ void main() {
     cout << endl << endl << endl << endl;
 
     for (int i = 0; i < 2; i++) {
-        cin >> vectAntena[i];
+         cin >> vectAntena[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -1265,17 +1328,22 @@ void main() {
         }
     }
 
-    cout << "======================================================================================" << endl << endl;
+    cout << "==================================================================================" << endl << endl;
+   
     vectAntena[0] = antena2;
     vectAntena[1] = antena3;
 
+    Antena* vectPointeriAntene[3];
+    vectPointeriAntene[0] = &antena1;
+    vectPointeriAntene[1] = &antena2;
+    vectPointeriAntene[2] = &antena3;
     Satelit s;
     cout << s.getDenumire() << endl;
     cout << s.getPretFabricare() << endl;
     cout << s.getGreutate() << endl;
     cout << s.getNrAntene() << endl;
     for (int i = 0; i < s.getNrAntene(); i++) {
-        cout << s.getAntene()[i] << endl;
+        cout << *s.getAntene()[i] << endl;
     }
     cout << s.getAreCamera() << endl;
 
@@ -1283,7 +1351,7 @@ void main() {
     s.setGreutate(45.13);
     s.setPretFabricare(2.1);
     s.setAreCamera(1);
-    s.setAntene(1, vectAntena);
+    s.setAntene(1, vectPointeriAntene);
 
     cout << endl << endl;;
     cout << s.getDenumire() << endl;
@@ -1291,13 +1359,13 @@ void main() {
     cout << s.getGreutate() << endl;
     cout << s.getNrAntene() << endl;
     for (int i = 0; i < s.getNrAntene(); i++) {
-        cout << s.getAntene()[i] << endl;
+        cout <<*s.getAntene()[i] << endl;
     }
     cout << s.getAreCamera() << endl;
     cout << endl << endl;;
 
 
-    Satelit s1("Magnum", 4.5, 11.11, 2, vectAntena, 1);
+    Satelit s1("Magnum", 4.5, 11.11, 2, vectPointeriAntene, 1);
     cout << s1 << endl;
 
     Satelit s2 = s;
@@ -1332,7 +1400,7 @@ void main() {
     cout << s5 << endl;
     cin >> s1;
     cout << s1 << endl;
-    cout << endl;
+
     cout << "Fisiere text:" << endl;
     cout << endl;
     ofstream fisAntena("antene.txt", ios::out);
@@ -1345,16 +1413,17 @@ void main() {
     cout << a1 << endl;;
     fisAnt.close();
 
-    ofstream fisSatelit("sateliti.txt", ios::out);
+    ofstream fisSatelit("satelit.txt", ios::out);
     fisSatelit << s4;
     fisSatelit.close();
     cout << endl;
     Satelit satelit1;
-    ifstream fisSat("sateliti.txt", ios::in);
+    ifstream fisSat("satelit.txt", ios::in);
     fisSat >> satelit1;
     cout << satelit1 << endl;;
     fisSat.close();
     cout << endl;
+
     cout << "Fisere binare: " << endl;
     cout << endl;
     angajat3.scriereInFisBin("angajati.bin");
@@ -1366,7 +1435,7 @@ void main() {
     Firma fi1;
     fi1.scriereInFisBin("firme.bin");
     cout << fi1 << endl;
-
+    
 
     cout << endl << endl << "====================================================================" << endl;
     cout << "MOSTENIRE" << endl << endl;
@@ -1379,7 +1448,7 @@ void main() {
     ing.setAreFacultateTerminata(1);
     cout << ing << endl;
 
-    Inginer ing1(41, "Mircea Alexandru", 28, 4700, "Magnetica", 4, 1);
+    Inginer ing1(41, "Mircea Alexandru", 28, 4500, "Magnetica", 4, 1);
     cout << ing1 << endl;
 
     Inginer ing2 = ing;
@@ -1391,7 +1460,7 @@ void main() {
 
     cout << "--------------------------------------------" << endl;
     cout << "--------------------------------------------" << endl;
-
+    cout << "--------------------------------------------" << endl;
     cout << "MOSTENIRE" << endl << endl;
     Manager m;
 
@@ -1415,6 +1484,39 @@ void main() {
 
     cout << m2 << endl;
 
+
+    cout << "--------------------------------------------" << endl;
+    cout << "--------------------------------------------" << endl;
+    cout << "--------------------------------------------" << endl;
+    CalculSalariu** vec = new CalculSalariu * [10];
+    vec[0] = &angajat;
+    vec[1] = &angajat1;
+    vec[2] = &angajat2;
+    vec[3] = &ing;
+    vec[4] = &ing1;
+    vec[5] = &ing2;
+    vec[6] = &m;
+    vec[7] = &m1;
+    vec[8] = &m2;
+    vec[9] = &angajat3;
+    for (int i = 0; i < 10; i++) {
+        cout << vec[i]->salariuLunar() << " lei" << endl;
+    }
+    cout << endl;
+
+    FunctieInCampulMuncii** vecFunctii = new FunctieInCampulMuncii * [10];
+    vecFunctii[0] = &angajat;
+    vecFunctii[1] = &angajat1;
+    vecFunctii[2] = &angajat2;
+    vecFunctii[3] = &ing;
+    vecFunctii[4] = &ing1;
+    vecFunctii[5] = &ing2;
+    vecFunctii[6] = &m;
+    vecFunctii[7] = &m1;
+    vecFunctii[8] = &m2;
+    vecFunctii[9] = &angajat3;
+    for (int i = 0; i < 10; i++) {
+        cout << vecFunctii[i]->recunoasteGrad() << endl;
+    }
+
 }
-
-
