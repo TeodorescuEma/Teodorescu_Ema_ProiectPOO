@@ -17,7 +17,7 @@ public:
 };
 
 class Angajat : public CalculSalariu, public FunctieInCampulMuncii {
-protected:
+private:
     const int codAngajat;
     static int nrMaximOre;
     char* nume;
@@ -112,20 +112,18 @@ public:
     friend float valoareBonusAnual(Angajat a);
 
     Angajat& operator=(const Angajat& a) {
-        if (this == &a) {
-            return *this;
+        if (this != &a) {
+
+            if (nume != nullptr) {
+                delete[] nume;
+            }
+
+            nume = new char[strlen(a.nume) + 1];
+            strcpy(nume, a.nume);
+
+            varsta = a.varsta;
+            salariu = a.salariu;
         }
-
-        if (nume != nullptr) {
-            delete[] nume;
-        }
-
-        nume = new char[strlen(a.nume) + 1];
-        strcpy(nume, a.nume);
-
-        varsta = a.varsta;
-        salariu = a.salariu;
-
         return *this;
     }
 
@@ -338,30 +336,31 @@ public:
 
 
     Antena& operator=(const Antena& an) {
-        if (this == &an) {
+        if (this != &an) {
+
+
+
+            if (numeAntena != nullptr) {
+                delete[] numeAntena;
+            }
+
+            numeAntena = new char[strlen(an.numeAntena) + 1];
+            strcpy(numeAntena, an.numeAntena);
+
+            material = an.material;
+            nrSenzori = an.nrSenzori;
+
+            if (frecventaRadioPerSenzor != nullptr) {
+                delete[] frecventaRadioPerSenzor;
+            }
+
+            frecventaRadioPerSenzor = new float[nrSenzori];
+            for (int i = 0; i < nrSenzori; i++) {
+                frecventaRadioPerSenzor[i] = an.frecventaRadioPerSenzor[i];
+            }
+        }
             return *this;
-        }
-
-        if (numeAntena != nullptr) {
-            delete[] numeAntena;
-        }
-
-        numeAntena = new char[strlen(an.numeAntena) + 1];
-        strcpy(numeAntena, an.numeAntena);
-
-        material = an.material;
-        nrSenzori = an.nrSenzori;
-
-        if (frecventaRadioPerSenzor != nullptr) {
-            delete[] frecventaRadioPerSenzor;
-        }
-
-        frecventaRadioPerSenzor = new float[nrSenzori];
-        for (int i = 0; i < nrSenzori; i++) {
-            frecventaRadioPerSenzor[i] = an.frecventaRadioPerSenzor[i];
-        }
-
-        return *this;
+        
     }
 
     friend ostream& operator<<(ostream& out, const Antena& antena) {
@@ -553,21 +552,21 @@ public:
     }
 
     Firma& operator=(const Firma& f) {
-        if (this == &f) {
+        if (this != &f) {
+
+
+            if (denumireFirma != nullptr) {
+                delete[] denumireFirma;
+            }
+
+            denumireFirma = new char[strlen(f.denumireFirma) + 1];
+            strcpy(denumireFirma, f.denumireFirma);
+
+            profit = f.profit;
+            anInfintare = f.anInfintare;
+        }
             return *this;
-        }
-
-        if (denumireFirma != nullptr) {
-            delete[] denumireFirma;
-        }
-
-        denumireFirma = new char[strlen(f.denumireFirma) + 1];
-        strcpy(denumireFirma, f.denumireFirma);
-
-        profit = f.profit;
-        anInfintare = f.anInfintare;
-
-        return *this;
+        
     }
 
     friend ostream& operator<<(ostream& out, const Firma& firma) {
@@ -692,7 +691,7 @@ public:
         this->areCamera = s.areCamera;
     }
 
-    // Operatorul de atribuire
+
     Satelit& operator=(const Satelit& s) {
         if (this != &s) {
             if (this->antene != NULL) {
@@ -972,7 +971,7 @@ public:
         return "Inginer";
     }
     float salariuLunar() {
-        return salariu + 500;
+        return getSalariu() + 500;
     }
 };
 
@@ -1059,12 +1058,13 @@ public:
         return "Manager";
     }
     float salariuLunar() {
-        return salariu + 2000;
+        return getSalariu() + 2000;
     }
 };
 
 
 void main() {
+
 
     Angajat angajat;
     angajat.afisareObj();
@@ -1293,7 +1293,7 @@ void main() {
     cout << endl << endl << endl << endl;
 
     for (int i = 0; i < 2; i++) {
-         cin >> vectAntena[i];
+        cin >> vectAntena[i];
     }
     cout << endl << endl;
     for (int i = 0; i < 2; i++) {
@@ -1329,7 +1329,7 @@ void main() {
     }
 
     cout << "==================================================================================" << endl << endl;
-   
+
     vectAntena[0] = antena2;
     vectAntena[1] = antena3;
 
@@ -1359,7 +1359,7 @@ void main() {
     cout << s.getGreutate() << endl;
     cout << s.getNrAntene() << endl;
     for (int i = 0; i < s.getNrAntene(); i++) {
-        cout <<*s.getAntene()[i] << endl;
+        cout << *s.getAntene()[i] << endl;
     }
     cout << s.getAreCamera() << endl;
     cout << endl << endl;;
@@ -1401,122 +1401,123 @@ void main() {
     cin >> s1;
     cout << s1 << endl;
 
-    cout << "Fisiere text:" << endl;
-    cout << endl;
-    ofstream fisAntena("antene.txt", ios::out);
-    fisAntena << antena2;
-    fisAntena.close();
-    cout << endl;
-    Antena a1;
-    ifstream fisAnt("antene.txt", ios::in);
-    fisAnt >> a1;
-    cout << a1 << endl;;
-    fisAnt.close();
+     cout << "Fisiere text:" << endl;
+     cout << endl;
+     ofstream fisAntena("antene.txt", ios::out);
+     fisAntena << antena2;
+     fisAntena.close();
+     cout << endl;
+     Antena a1;
+     ifstream fisAnt("antene.txt", ios::in);
+     fisAnt >> a1;
+     cout << a1 << endl;;
+     fisAnt.close();
 
-    ofstream fisSatelit("satelit.txt", ios::out);
-    fisSatelit << s4;
-    fisSatelit.close();
-    cout << endl;
-    Satelit satelit1;
-    ifstream fisSat("satelit.txt", ios::in);
-    fisSat >> satelit1;
-    cout << satelit1 << endl;;
-    fisSat.close();
-    cout << endl;
+     ofstream fisSatelit("satelit.txt", ios::out);
+     fisSatelit << s4;
+     fisSatelit.close();
+     cout << endl;
+     Satelit satelit1;
+     ifstream fisSat("satelit.txt", ios::in);
+     fisSat >> satelit1;
+     cout << satelit1 << endl;;
+     fisSat.close();
+     cout << endl;
 
-    cout << "Fisere binare: " << endl;
-    cout << endl;
-    angajat3.scriereInFisBin("angajati.bin");
-    Angajat an1;
-    an1.citireInFisBin("angajati.bin");
-    cout << an1 << endl;
-    cout << endl;
-    firma2.scriereInFisBin("firme.bin");
-    Firma fi1;
-    fi1.scriereInFisBin("firme.bin");
-    cout << fi1 << endl;
-    
-
-    cout << endl << endl << "====================================================================" << endl;
-    cout << "MOSTENIRE" << endl << endl;
-    Inginer ing;
-    cout << ing.getDepartament() << endl;
-    cout << ing.getVechimeInDomeniu() << endl;
-    cout << ing.getAreFacultateTerminata() << endl;
-    ing.setDepartament("ElectroTehnic");
-    ing.setVechimeInDomeniu(3);
-    ing.setAreFacultateTerminata(1);
-    cout << ing << endl;
-
-    Inginer ing1(41, "Mircea Alexandru", 28, 4500, "Magnetica", 4, 1);
-    cout << ing1 << endl;
-
-    Inginer ing2 = ing;
-    cout << ing2 << endl;
-
-    ing2 = ing1;
-    cout << ing2 << endl;
+     cout << "Fisere binare: " << endl;
+     cout << endl;
+     angajat3.scriereInFisBin("angajati.bin");
+     Angajat an1;
+     an1.citireInFisBin("angajati.bin");
+     cout << an1 << endl;
+     cout << endl;
+     firma2.scriereInFisBin("firme.bin");
+     Firma fi1;
+     fi1.scriereInFisBin("firme.bin");
+     cout << fi1 << endl;
 
 
-    cout << "--------------------------------------------" << endl;
-    cout << "--------------------------------------------" << endl;
-    cout << "--------------------------------------------" << endl;
-    cout << "MOSTENIRE" << endl << endl;
-    Manager m;
+     cout << endl << endl << "====================================================================" << endl;
+     cout << "MOSTENIRE" << endl << endl;
+     Inginer ing;
+     cout << ing.getDepartament() << endl;
+     cout << ing.getVechimeInDomeniu() << endl;
+     cout << ing.getAreFacultateTerminata() << endl;
+     ing.setDepartament("ElectroTehnic");
+     ing.setVechimeInDomeniu(3);
+     ing.setAreFacultateTerminata(1);
+     cout << ing << endl;
 
-    cout << m.getDepartamentManageriat() << endl;
-    cout << m.getAniFunctie() << endl;
-    cout << m.getNrSubordonati() << endl;
+     Inginer ing1(41, "Mircea Alexandru", 28, 4500, "Magnetica", 4, 1);
+     cout << ing1 << endl;
 
-    m.setDepartamentManageriat("Marketing");
-    m.setAniFunctie(2);
-    m.setNrSubordonati(100);
+     Inginer ing2 = ing;
+     cout << ing2 << endl;
 
-    cout << m << endl;
-
-    Manager m1(54, "Teodorescu Ema", 22, 8240, "IT", 3, 450);
-    cout << m1 << endl;
-
-    Manager m2 = m;
-    cout << m2 << endl;
-
-    m2 = m1;
-
-    cout << m2 << endl;
+     ing2 = ing1;
+     cout << ing2 << endl;
 
 
-    cout << "--------------------------------------------" << endl;
-    cout << "--------------------------------------------" << endl;
-    cout << "--------------------------------------------" << endl;
-    CalculSalariu** vec = new CalculSalariu * [10];
-    vec[0] = &angajat;
-    vec[1] = &angajat1;
-    vec[2] = &angajat2;
-    vec[3] = &ing;
-    vec[4] = &ing1;
-    vec[5] = &ing2;
-    vec[6] = &m;
-    vec[7] = &m1;
-    vec[8] = &m2;
-    vec[9] = &angajat3;
-    for (int i = 0; i < 10; i++) {
-        cout << vec[i]->salariuLunar() << " lei" << endl;
-    }
-    cout << endl;
+     cout << "--------------------------------------------" << endl;
+     cout << "--------------------------------------------" << endl;
+     cout << "--------------------------------------------" << endl;
+     cout << "MOSTENIRE" << endl << endl;
+     Manager m;
 
-    FunctieInCampulMuncii** vecFunctii = new FunctieInCampulMuncii * [10];
-    vecFunctii[0] = &angajat;
-    vecFunctii[1] = &angajat1;
-    vecFunctii[2] = &angajat2;
-    vecFunctii[3] = &ing;
-    vecFunctii[4] = &ing1;
-    vecFunctii[5] = &ing2;
-    vecFunctii[6] = &m;
-    vecFunctii[7] = &m1;
-    vecFunctii[8] = &m2;
-    vecFunctii[9] = &angajat3;
-    for (int i = 0; i < 10; i++) {
-        cout << vecFunctii[i]->recunoasteGrad() << endl;
-    }
+     cout << m.getDepartamentManageriat() << endl;
+     cout << m.getAniFunctie() << endl;
+     cout << m.getNrSubordonati() << endl;
 
+     m.setDepartamentManageriat("Marketing");
+     m.setAniFunctie(2);
+     m.setNrSubordonati(100);
+
+     cout << m << endl;
+
+     Manager m1(54, "Teodorescu Ema", 22, 8240, "IT", 3, 450);
+     cout << m1 << endl;
+
+     Manager m2 = m;
+     cout << m2 << endl;
+
+     m2 = m1;
+
+     cout << m2 << endl;
+
+
+     cout << "--------------------------------------------" << endl;
+     cout << "--------------------------------------------" << endl;
+     cout << "--------------------------------------------" << endl;
+     CalculSalariu** vec = new CalculSalariu * [10];
+     vec[0] = &angajat;
+     vec[1] = &angajat1;
+     vec[2] = &angajat2;
+     vec[3] = &ing;
+     vec[4] = &ing1;
+     vec[5] = &ing2;
+     vec[6] = &m;
+     vec[7] = &m1;
+     vec[8] = &m2;
+     vec[9] = &angajat3;
+     for (int i = 0; i < 10; i++) {
+         cout << vec[i]->salariuLunar() << " lei" << endl;
+     }
+     cout << endl;
+
+     FunctieInCampulMuncii** vecFunctii = new FunctieInCampulMuncii * [10];
+     vecFunctii[0] = &angajat;
+     vecFunctii[1] = &angajat1;
+     vecFunctii[2] = &angajat2;
+     vecFunctii[3] = &ing;
+     vecFunctii[4] = &ing1;
+     vecFunctii[5] = &ing2;
+     vecFunctii[6] = &m;
+     vecFunctii[7] = &m1;
+     vecFunctii[8] = &m2;
+     vecFunctii[9] = &angajat3;
+     for (int i = 0; i < 10; i++) {
+         cout << vecFunctii[i]->recunoasteGrad() << endl;
+     }
+
+ 
 }
